@@ -1,27 +1,32 @@
 library(ggplot2)
 
-startnum<-927
+startnum<-27
+onenum<-as.data.frame(startnum)
+colnames(onenum)<- c("yvals")
 new_num<-if (startnum %% 2 ==0) {
   startnum/2
 } else {
   (startnum*3)+1
 }
+twonum<-as.data.frame(new_num)
+colnames(twonum)<- c("yvals")
 its<-1000
 y<-seq(1:its)
 
 z<-as.data.frame(capture.output(for (val in y) {
   if(new_num %% 2 == 0){
     new_num = ((new_num)/2)
-  print(new_num)}
+    print(new_num)}
   if(new_num %% 2 != 0){
     new_num = ((new_num*3)+1)
-  print(new_num)}
+    print(new_num)}
 }))
 
 
 colnames(z) <- c("yvals")
-cleanz = as.data.frame(as.numeric(substring(z$yvals,5)))
+cleanz <- as.data.frame(as.numeric(substring(z$yvals,5)))
 colnames(cleanz)<- c("yvals")
+cleanz<-as.data.frame(rbind(onenum,twonum,cleanz))
 
 df1 <- as.data.frame(cleanz[cleanz$yvals != 1, ])
 colnames(df1)<- c("yvals")
@@ -39,8 +44,8 @@ colnames(q)<-c("xvals")
 
 graph<-as.data.frame(cbind(df4,q))
 
-ggplot(data = graph, aes(x = xvals, y=yvals)) + geom_point(size=1, colour="darkgreen") + geom_line()+ggtitle("Starting Number Falls to 1 in This Many Steps:",nrow(graph)+1)
+ggplot(data = graph, aes(x = xvals, y=yvals)) + geom_point(size=1, colour="darkgreen") + geom_line()+ggtitle("Starting Number Falls to 1 in This Many Steps:",nrow(graph)-1)
 
+plot_ly(data = graph, x = ~xvals, y = ~yvals, type = "scatter", mode = "lines", marker = list(size = 1, color = "pink"))
 
 ggplot(data = graph, aes(x = xvals, y=yvals)) + geom_point(size=1, colour="darkgreen") + geom_line()+geom_text(label=graph$yvals, nudge_y = .11, nudge_x = .1,)
-
